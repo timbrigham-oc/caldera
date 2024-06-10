@@ -1,5 +1,6 @@
 import json
 import re
+import logging
 
 PARSER_SIGNALS_FAILURE = 418  # Universal Teapot error code
 
@@ -10,6 +11,16 @@ class BaseParser:
         self.mappers = parser_info['mappers']
         self.used_facts = parser_info['used_facts']
         self.source_facts = parser_info['source_facts']
+        # Define logging for parsers derived from BaseParser. 
+        self.log = logging.getLogger(__name__)
+        self.log.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        self.log.addHandler(ch)
+        self.log.info('Initializing BaseParser instance with name: %s', __name__ )
+
 
     @staticmethod
     def set_value(search, match, used_facts):
