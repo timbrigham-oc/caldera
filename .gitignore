@@ -35,6 +35,12 @@ data/backup/*
 .tox/
 node_modules/
 
+
+# timbrigham-oc 
+data/abilities/*
+conf/agents.yml
+data/adversaries/* 
+
 # coverage reports
 htmlcov/
 .coverage
