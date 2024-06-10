@@ -14,13 +14,13 @@ class BaseParser:
     # better logging. 
     format = "%(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
-    console = Console(theme=Theme({"logging.level.warning": "yellow"}))
+    console = Console(theme=Theme({"logging.level.warning": "yellow"}),width=240)
     level=logging.DEBUG
     logging.basicConfig(
         level=level,
         format=format,
         datefmt=datefmt,
-        handlers=[RichHandler(rich_tracebacks=True, markup=True, console=console)]
+        handlers=[RichHandler(rich_tracebacks=True, markup=True, console=console,show_time=False)]
     )
 
     for logger_name in logging.root.manager.loggerDict.keys():

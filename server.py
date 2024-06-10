@@ -46,12 +46,12 @@ def setup_logger(level=logging.DEBUG):
     if no_color():
         logging.basicConfig(level=level, format=format, datefmt=datefmt)
     else:
-        console = Console(theme=Theme({"logging.level.warning": "yellow"}))
+        console = Console(theme=Theme({"logging.level.warning": "yellow"}),width=240)
         logging.basicConfig(
             level=level,
             format=format,
             datefmt=datefmt,
-            handlers=[RichHandler(rich_tracebacks=True, markup=True, console=console)]
+            handlers=[RichHandler(rich_tracebacks=True, markup=True, console=console,show_time=False)]
         )
 
     for logger_name in logging.root.manager.loggerDict.keys():
