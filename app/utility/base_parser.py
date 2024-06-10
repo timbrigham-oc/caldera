@@ -1,26 +1,41 @@
 import json
 import re
 import logging
+from rich.logging import RichHandler
+from rich.console import Console
+from rich.theme import Theme
 
 PARSER_SIGNALS_FAILURE = 418  # Universal Teapot error code
 
 
 class BaseParser:
+    # Add definitions here for how we want the logging for the parsers to be processed. 
+    # Make these class wide. This goes along with an update to requirements in stockpile for 
+    # better logging. 
+    format = "%(message)s"
+    datefmt = "%Y-%m-%d %H:%M:%S"
+    console = Console(theme=Theme({"logging.level.warning": "yellow"}))
+    level=logging.DEBUG
+    logging.basicConfig(
+        level=level,
+        format=format,
+        datefmt=datefmt,
+        handlers=[RichHandler(rich_tracebacks=True, markup=True, console=console)]
+    )
+
+    for logger_name in logging.root.manager.loggerDict.keys():
+        if logger_name in ("aiohttp.server", "asyncio"):
+            continue
+        else:
+            logging.getLogger(logger_name).setLevel(100)
+    logging.getLogger("markdown_it").setLevel(logging.WARNING)
+    logging.captureWarnings(True)
+
 
     def __init__(self, parser_info):
         self.mappers = parser_info['mappers']
         self.used_facts = parser_info['used_facts']
         self.source_facts = parser_info['source_facts']
-        # Define logging for parsers derived from BaseParser. 
-        self.log = logging.getLogger(__name__)
-        self.log.setLevel(logging.DEBUG)
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        self.log.addHandler(ch)
-        self.log.info('Initializing BaseParser instance with name: %s', __name__ )
-
 
     @staticmethod
     def set_value(search, match, used_facts):
